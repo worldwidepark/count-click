@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>          
+    
+        <script type="text/javascript">
+        function init() {
+        }
+    </script>
+    </head>
+    <body>
+        <div class="main">
+
+            <h3>Click Counter</h3>
+            <button id="clickme">Click me: 0</button>
+        
+            <h5>Filler Text</h5>
+        
+          </div>
+
+        
+     <input id= "button"  type="button" value="night1">
+     <input id="linkClicked" type="button" value="night">
+       <span id = 'display'>0</span> click 
+       
+       <body onload="init1()">
+        <div id="result"></div>
+    
+    </body>
+      <script>
+    /*    
+        count = localStorage.getItem('count');
+        if(count == null) {
+         count = 0; }
+ 
+         var btn = document.getElementById("linkClicked");
+         var disp = document.getElementById("display");
+ 
+         btn.onclick = function(){
+             count += 1;
+             disp.innerHTML = count ; 
+           localstorage.setItem("count", count);
+         };
+     */
+     </script>
+
+<script>
+   count = localStorage.getItem('count');
+count = parseInt(count); // because localstorage stores everything in strings
+
+// First time the value does not exist...
+if(count == null) {
+  count = 0; 
+}
+
+button.onclick = function() {
+  count += 1;
+  button.innerHTML = "Click me: " + count;
+  localstorage.setItem("count", count);
+};
+function init() {
+	//localStorage 데이터 추가 방법 3가지
+
+	localStorage.setItem("Test", "Sample");
+}
+function init1() {
+	//LocalStorage 데이터 취득 방법 3가지
+
+	var val = localStorage.getItem("Test");
+
+	//취득 데이터 출력
+	document.querySelector("#result").innerHTML = val;
+}
+  </script>
+</html>
