@@ -21,6 +21,15 @@ $sql="SELECT * FROM counter_table ORDER BY id DESC limit 1";
 $id_result= mysqli_query($conn,$sql);
 $row = mysqli_fetch_array($id_result);
 
+$sql="
+UPDATE counter_table
+SET
+link_to_go= 'link.php?id={$row["ID"]}'
+     WHERE
+      ID={$row["ID"]}
+     
+";
+$link_to_go_result= mysqli_query($conn,$sql);
 
 
 if($id_result === false){
@@ -29,6 +38,7 @@ if($id_result === false){
 } else{
     echo "link.php?id=".$row["ID"]."をSLACKに入力してください。";
 }
+
 
 
 ?>
