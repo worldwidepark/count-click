@@ -10,6 +10,7 @@ $sql = 'SELECT * FROM counter_table';
 $result = mysqli_query($conn, $sql);
 while($row = mysqli_fetch_array($result)){
     $filtered = array(
+        'id'=>htmlspecialchars($row['ID']),
         'link'=>htmlspecialchars($row['link']),
         'link_to_go'=>htmlspecialchars($row['link_to_go']),
         'description'=>htmlspecialchars($row['description']),
@@ -22,7 +23,7 @@ while($row = mysqli_fetch_array($result)){
              <td><?=$filtered['description']?></td>
              <td><?=$filtered['count']?></td>　
              <td>
-                <form action="process_delete_author.php" method="post" 
+                <form action="process_delete.php" method="post" 
                 onsubmit="if(!confirm('sure?')){return false;}">
                     <input type = "hidden" name="id" value="<?=$filtered['id']?>">
                     <input type="submit" value ="delete">

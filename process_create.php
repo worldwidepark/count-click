@@ -1,3 +1,16 @@
+<style>
+
+
+ .link{
+    margin-top: 15px;
+    padding:5px;
+    background-color: yellow;
+    border: 2px solid #666;
+    width: auto;
+    color: #000000;  
+ }
+
+</style>
 <?php
 $conn = mysqli_connect('localhost','root','12345','test');
 
@@ -36,9 +49,11 @@ if($id_result === false){
     echo "保存失敗です。朴まで問い合わせてください。.";
     error_log(mysqli_error($conn));
 } else{
-    echo "link.php?id=".$row["ID"]."をSLACKに入力してください。";
+    echo "<span class='link'>link.php?id=".$row["ID"]."</span> をSLACKに入力してください。";
 }
 
 
 
 ?>
+</br></br>
+<a href = "index.php">戻る</a>
