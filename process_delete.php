@@ -10,7 +10,7 @@ $filtered = array(
 $sql="
 DELETE 
  FROM counter_table
- WHERE ID = {$filtered['id']}";
+ WHERE id = {$filtered['id']}";
 
 
 $result = mysqli_query($conn,$sql);

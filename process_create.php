@@ -25,12 +25,12 @@ INSERT INTO counter_table
  VALUES(
      '{$filtered['link']}',
      '{$filtered['description']}',
-     0
+     -1 
      )
 ";
-
+#slackでLinkを貼る時は、1回起動させるため、カウントが１上がるため、－1にする。
 $result = mysqli_query($conn,$sql);
-$sql="SELECT * FROM counter_table ORDER BY id DESC limit 1";
+$sql="SELECT * FROM counter_table ORDER BY ID DESC limit 1";
 $id_result= mysqli_query($conn,$sql);
 $row = mysqli_fetch_array($id_result);
 
