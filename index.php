@@ -2,7 +2,7 @@
 <html lang="ja">
 <table border='1'>
  <tr>
-     <td>移動先link</td><td>SLACK入力LINK</td><td>descriptin</td><td>click回数</td><td>削除</td>
+     <td>移動先link</td><td>SLACK入力LINK</td><td>descriptin</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 <?php
 $conn = mysqli_connect('localhost','root','12345','test');
 
@@ -29,8 +29,71 @@ while($row = mysqli_fetch_array($result)){
                     <input type="submit" value ="delete">
        　　　　 </form>
         　　　</td>
+    　　　    <td>
+                <form action="index.php" method="post" >
+                    <input type = "hidden" name="plus" value="<?=$filtered['id']?>">
+                    <input type="submit" value ="+">
+       　　　　 </form>
+              </td>
+              <td>
+                <form action="index.php" method="post" >
+                    <input type = "hidden" name="minus" value="<?=$filtered['id']?>">
+                    <input type="submit" value ="-">
+       　　　　 </form>
+              </td>
+
+            
+
             </tr>
             <?php
+     }
+
+
+     if(isset($_POST['plus'])){
+        $plus_sql = "SELECT * FROM counter_table WHERE id= {$_POST['plus']}" ;
+
+        $plus_result = mysqli_query($conn,$plus_sql);
+        $row = mysqli_fetch_array($plus_result);
+        
+        $filtered = array(
+            'count'=>htmlspecialchars($row['count'])
+        );
+        
+        #count +1
+        
+        $filtered['count']= $filtered['count'] + 1;
+        
+        $pluscount_sql = "
+        UPDATE counter_table SET count = {$filtered['count']}  WHERE id = {$_POST['plus']}
+        ";
+
+        
+        $plus_updateresult = mysqli_query($conn,$pluscount_sql);
+
+     }
+
+     
+     if(isset($_POST['minus'])){
+        $minus_sql = "SELECT * FROM counter_table WHERE id= {$_POST['minus']}" ;
+
+        $minus_result = mysqli_query($conn,$minus_sql);
+        $row = mysqli_fetch_array($minus_result);
+        
+        $filtered = array(
+            'count'=>htmlspecialchars($row['count'])
+        );
+        
+        #count -1
+        
+        $filtered['count']= $filtered['count'] - 1;
+        
+        $minuscount_sql = "
+        UPDATE counter_table SET count = {$filtered['count']}  WHERE id = {$_POST['minus']}
+        ";
+
+        
+        $minus_updateresult = mysqli_query($conn,$minuscount_sql);
+
      }
 
      ?>
