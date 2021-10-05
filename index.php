@@ -1,10 +1,40 @@
 <!DOCTYPE html>
 <html lang="ja">
 <table border='1'>
- <tr>
+    
+<head>
+    <meta charset="UTF-8"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAGATA　LINK</title>
+</head>
+
+<body>
+<h1>LINKとLINKの説明を入力してください。</h1>    
+<form action="process_create.php" method="POST">
+<p><input type = 'text' name='link' placeholder='linkを入力'></p>
+<p><textarea name='description' placeholder ='説明'></textarea></p>
+<p><input type ='submit' value = "入力"></p>
+</form>
+<tr>
      <td>移動先link</td><td>SLACK入力LINK</td><td>descriptin</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 <?php
-$conn = mysqli_connect('localhost','root','12345','test');
+
+if(!isset($_POST['password'])){
+    header("Location: login.php");
+}
+else{ 
+
+    if($_POST['password']== 1234 ){
+   exit;
+}   
+ else{
+ header("Location: login.php?wrong");
+}
+}
+
+
+$conn = mysqli_connect('localhost','root','qkrguddn1!','test');
 
 $sql = 'SELECT * FROM counter_table';
 $result = mysqli_query($conn, $sql);
@@ -100,19 +130,6 @@ while($row = mysqli_fetch_array($result)){
 
 
 
-<head>
-    <meta charset="UTF-8"> 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAGATA　LINK</title>
-</head>
-<body>
-<h1>LINKとLINKの説明を入力してください。</h1>    
-<form action="process_create.php" method="POST">
-<p><input type = 'text' name='link' placeholder='linkを入力'></p>
-<p><textarea name='description' placeholder ='説明'></textarea></p>
-<p><input type ='submit' value = "入力"></p>
-</form>
 
 </body>
 </html>
