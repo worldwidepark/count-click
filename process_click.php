@@ -1,9 +1,9 @@
 
 <?php
 
+include('password.php');
 
-
-$conn = mysqli_connect('localhost','root','12345','test');
+$conn = mysqli_connect('localhost','root',$password,'test');
 
 if(isset($_POST['plus'])){
         $plus_sql = "SELECT * FROM counter_table WHERE id= {$_POST['plus']}" ;

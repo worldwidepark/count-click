@@ -1,3 +1,8 @@
+<?php
+#ob_start();
+session_start();
+include('password.php');
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <table border='1'>
@@ -20,24 +25,17 @@
      <td>移動先link</td><td>SLACK入力LINK</td><td>descriptin</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 <?php
 
-if(!isset($_POST['password'])){
+if(!isset($_SESSION['password'])){
     header("Location: login.php");
 }
-else{ 
+else{
 
-    if($_POST['password']== 1234 ){
-   exit;
-}   
- else{
- header("Location: login.php?wrong");
-}
-}
-
-
-$conn = mysqli_connect('localhost','root','qkrguddn1!','test');
+$conn = mysqli_connect('localhost','root',$password,'test');
 
 $sql = 'SELECT * FROM counter_table';
 $result = mysqli_query($conn, $sql);
+}
+
 while($row = mysqli_fetch_array($result)){
     $filtered = array(
         'id'=>htmlspecialchars($row['ID']),
@@ -125,11 +123,11 @@ while($row = mysqli_fetch_array($result)){
         $minus_updateresult = mysqli_query($conn,$minuscount_sql);
 
      }
-
+    
      ?>
 
 
-
+    
 
 </body>
 </html>

@@ -3,7 +3,8 @@
 <head>
 
 <?php
-$conn = mysqli_connect('localhost','root','12345','test');
+include('password.php');
+$conn = mysqli_connect('localhost','root',$password,'test');
 $sql = "SELECT * FROM counter_table WHERE id= {$_GET['id']}" ;
 
 $result = mysqli_query($conn,$sql);

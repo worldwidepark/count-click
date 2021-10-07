@@ -12,7 +12,9 @@
 
 </style>
 <?php
-$conn = mysqli_connect('localhost','root','12345','test');
+
+include('password.php');
+$conn = mysqli_connect('localhost','root',$password,'test');
 
 $filtered = array(
     'link'=>mysqli_real_escape_string($conn,$_POST['link']),
