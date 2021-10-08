@@ -23,7 +23,7 @@ $filtered = array(
 
 $sql="
 INSERT INTO counter_table
-(link, description, count )
+(link, explan, count )
  VALUES(
      '{$filtered['link']}',
      '{$filtered['description']}',

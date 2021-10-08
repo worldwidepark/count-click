@@ -25,8 +25,17 @@ if(isset($_POST['plus'])){
 
 
         $plus_updateresult = mysqli_query($conn,$pluscount_sql);
-        header('location: index.php');
-
+      
+if(isset($_POST['search'])){
+    $search = $_POST['search'];
+    
+    header('location: index.php?search='.$search);
+  }
+  else{
+    header('location: index.php');
+  }
+  
+  
      }
 
 
@@ -52,7 +61,16 @@ if(isset($_POST['plus'])){
         $minus_updateresult = mysqli_query($conn,$minuscount_sql);
 
 
-       header('location: index.php');
+        if(isset($_POST['search'])){
+            $search = $_POST['search'];
+            
+            header('location: index.php?search='.$search);
+          }
+          else{
+            header('location: index.php');
+          }
+          
+          
      }
 
 

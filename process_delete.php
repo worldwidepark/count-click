@@ -16,8 +16,17 @@ DELETE
 
 $result = mysqli_query($conn,$sql);
 
-  header('location: index.php');
 
+
+
+if(isset($_POST['search'])){
+  $search = $_POST['search'];
+  
+  header('location: index.php?search='.$search);
+}
+else{
+  header('location: index.php');
+}
 
 
 ?>
