@@ -28,8 +28,7 @@ if(isset($_POST['plus'])){
       
 if(isset($_POST['search'])){
     $search = $_POST['search'];
-    
-    header('location: index.php?search='.$search);
+   header('location: index.php?search='.$search);
   }
   else{
     header('location: index.php');
