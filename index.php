@@ -54,13 +54,31 @@ if(isset($_GET['search'])){
   $search_result = mysqli_query($conn, $sql_search);
 
   ?>
-  <h3>検索結果は以下になります。</h3>
+<?php
+if(!isset(($_POST['modify']))){ 
+    ?>
+           <form action="#" method="post" >
+                       <input type = "hidden" name="modify">
+                       <input type="submit" value ="修正開始">                
+                </form>
+<?php
+   }
+   else{
+   ?>
+<form action="#" method="post" >
+                       <input type = "hidden" name="modify_go">
+                       <button type="submit"  form = "link_modify">修正実行</button>                
+                </form>
+<?php }?>
+
+     <h3>検索結果は以下になります。</h3>
 <table border="1">
 
 <tr>
      <td>移動先link</td><td>SLACK入力LINK</td><td>description</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 
 <?php
+$num =0;
 while($row = mysqli_fetch_array($search_result)){
     $filtered = array(
         'id'=>htmlspecialchars($row['ID']),
@@ -69,19 +87,34 @@ while($row = mysqli_fetch_array($search_result)){
         'description'=>htmlspecialchars($row['explan']),
         'count'=>htmlspecialchars($row['count'])
     );
+$num =$num+1;
 
     ?>
 　　　　　　<tr>
-             <td><?=$filtered['link']?></td>
+             <td><?php
+                 if(isset(($_POST['modify']))){ ?>
+                  <form class="link_modify" action="#" method="POST"><input type ="text" name="<?=$num?>" value="<?=$filtered['link']?>"></form> 
+                 <?php }
+                 else{
+                    echo $filtered['link']; }
+                    ?>
+            </td>
              <td><?=$filtered['link_to_go']?></td>
-             <td><?=$filtered['description']?></td>
+             <td><?php
+                 if(isset(($_POST['modify']))){ ?>
+                  <form id="description_modify"><input type ="text" value="<?=$filtered['description']?>"></form> 
+                 <?php }
+                 else{
+                   echo $filtered['description'];}
+                    ?>
+                    </td>
              <td><?=$filtered['count']?></td>　
              <td>
                 <form action="process_delete.php" method="post" 
                 onsubmit="if(!confirm('sure?')){return false;}">
                     <input type = "hidden" name="id" value="<?=$filtered['id']?>">
                    <?php if(isset($_GET['search'])){ 
-                       ?>
+                     ?>  
                     <input type = "hidden" name="search" value="<?=$search?>">
                     <?php }?>
                     <input type="submit" value ="delete">
@@ -100,38 +133,40 @@ while($row = mysqli_fetch_array($search_result)){
                         <input type = "hidden" name="search" value="<?=$search?>"> 
                     <input type="submit" value ="-">
        　　　　 </form>
-              </td>
-
-
-              <td>
-                <form action="#" method="post" >
-                    <?php
-                    $input = '<form><input type ="text" value="'.$filtered["link"].'"</form>' ;
-?>
-                  <!--  <input type = "hidden" name="minus" value="#$filtered['id']?">
-                    <input type = "hidden" name="search" value="#$search?>">
-                    <input type="submit" value ="-"> -->
-                     <input type = "hidden" name="search" 
-                     value="<?php $filtered['link']=$input?>">
-                    <input type="submit" value ="修正"> 
-       　　　　 
-                
-                
-                </form>
-              </td>
-
+              </td>         
             
 
  
              </tr>
            
-
-    <?php
+ <?php  
 }}}
-echo"$input";
+
+echo $_POST['1'];
+echo $_POST['2'];
+?>
+<!--
+    <php
+$id = $filtered['id']  ;
+if(isset($_POST['modify_go'])){
+
+   $link= $filtered['link'] ;
+   $explan= $filtered['description'] ;    
+   
+   $sql_modify = "UPDATE counter_table SET link='$link', explan = '$explan' WHERE id = '$id'";
+   $result_modify = mysqli_query($conn, $sql_modify);
+   
+
+}
+
+
+
+
+
 
              ?>
-  </table>
+-->  
+</table>
 
 <table border="1">
 <tr>
@@ -157,7 +192,11 @@ while($row = mysqli_fetch_array($result)){
                 <form action="process_delete.php" method="post" 
                 onsubmit="if(!confirm('sure?')){return false;}">
                     <input type = "hidden" name="id" value="<?=$filtered['id']?>">
-                    <input type = "hidden" name="search" value="<?=$search?>">
+                    <?php if(isset($_GET['search'])){ 
+                        ?>                
+                        <input type = "hidden" name="search" value="<?=$search?>"> 
+                        <?php 
+                        }?>
                     <input type="submit" value ="delete">
        　　　　 </form>
         　　　</td>
