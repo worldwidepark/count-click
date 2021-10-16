@@ -42,6 +42,23 @@ $sql = 'SELECT * FROM counter_table';
 $result = mysqli_query($conn, $sql);
 }
 
+if(isset($_POST['modify_go_link'])){
+    
+    $link=$_POST['modify_go_link'];
+    $id=$_POST['modify_link_id'];
+    $sql_modify_go_link = "UPDATE counter_table SET link='$link' WHERE id = '$id'";
+    $result_modify = mysqli_query($conn, $sql_modify_go_link);
+    header('location: index.php?search='.$_GET['search']);
+}
+
+if(isset($_POST['modify_go_description'])){
+    
+    $explan=$_POST['modify_go_description'];
+    $id=$_POST['modify_description_id'];
+    $sql_modify_go_description = "UPDATE counter_table SET explan = '$explan' WHERE id = '$id'";
+    $result_modify = mysqli_query($conn, $sql_modify_go_description);
+    header('location: index.php?search='.$_GET['search']);
+}
 
 if(isset($_GET['search'])){
     if($_GET['search']==""){
@@ -54,22 +71,7 @@ if(isset($_GET['search'])){
   $search_result = mysqli_query($conn, $sql_search);
 
   ?>
-<?php
-if(!isset(($_POST['modify']))){ 
-    ?>
-           <form action="#" method="post" >
-                       <input type = "hidden" name="modify">
-                       <input type="submit" value ="修正開始">                
-                </form>
-<?php
-   }
-   else{
-   ?>
-<form action="#" method="post" >
-                       <input type = "hidden" name="modify_go">
-                       <button type="submit"  form = "link_modify">修正実行</button>                
-                </form>
-<?php }?>
+
 
      <h3>検索結果は以下になります。</h3>
 <table border="1">
@@ -78,7 +80,7 @@ if(!isset(($_POST['modify']))){
      <td>移動先link</td><td>SLACK入力LINK</td><td>description</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 
 <?php
-$num =0;
+$num = 0;
 while($row = mysqli_fetch_array($search_result)){
     $filtered = array(
         'id'=>htmlspecialchars($row['ID']),
@@ -87,26 +89,63 @@ while($row = mysqli_fetch_array($search_result)){
         'description'=>htmlspecialchars($row['explan']),
         'count'=>htmlspecialchars($row['count'])
     );
-$num =$num+1;
+    $num=$num+1;
+?>
 
-    ?>
 　　　　　　<tr>
              <td><?php
-                 if(isset(($_POST['modify']))){ ?>
-                  <form class="link_modify" action="#" method="POST"><input type ="text" name="<?=$num?>" value="<?=$filtered['link']?>"></form> 
+                if(isset($_POST['modify_link'])){
+                if($_POST['modify_link']==$num){ ?>
+                  <form action="#" method="POST">
+                      <input type ="text" name="modify_go_link" value="<?=$filtered['link']?>">
+                      <input type = "hidden" name="modify_link_id" value="<?=$filtered['id']?>">
+                      <button type="submit">修正開始</button>
+                    </form> 
                  <?php }
+                    else{
+                        echo $filtered['link']; 
+                        ?>
+                       <form action="#" method="post" >
+                           <input type = "hidden" name="modify_link" value="<?=$num?>">
+                           <button type="submit" >修正</button>                
+                    </form>           
+                    <?php } }
                  else{
-                    echo $filtered['link']; }
+                    echo $filtered['link']; 
                     ?>
+                   <form action="#" method="post" >
+                       <input type = "hidden" name="modify_link" value="<?=$num?>">
+                       <button type="submit" >修正</button>                
+                </form>           
+                <?php } ?>
             </td>
              <td><?=$filtered['link_to_go']?></td>
              <td><?php
-                 if(isset(($_POST['modify']))){ ?>
-                  <form id="description_modify"><input type ="text" value="<?=$filtered['description']?>"></form> 
+             if(isset($_POST['modify_description'])){
+                 if($_POST['modify_description']==$num){ ?>
+                  <form action="#" method="POST">
+                      <input type ="text" name="modify_go_description" value="<?=$filtered['description']?>">
+                      <input type = "hidden" name="modify_description_id" value="<?=$filtered['id']?>">
+                  <button type="submit">修正開始</button> 
+                </form> 
                  <?php }
                  else{
-                   echo $filtered['description'];}
-                    ?>
+                    echo $filtered['description'];?>
+                    <form action="#" method="post" >
+                    <input type = "hidden" name="modify_description" value="<?=$num?>">
+                    <button type="submit" >修正</button>    
+                    <?php } 
+                }
+                 else{
+                   echo $filtered['description'];?>
+                   <form action="#" method="post" >
+                   <input type = "hidden" name="modify_description" value="<?=$num?>">
+                   <button type="submit" >修正</button>    
+                   <?php } ?>
+                     
+                           
+                </form>  
+              </form>
                     </td>
              <td><?=$filtered['count']?></td>　
              <td>
@@ -142,8 +181,6 @@ $num =$num+1;
  <?php  
 }}}
 
-echo $_POST['1'];
-echo $_POST['2'];
 ?>
 <!--
     <php
@@ -153,18 +190,11 @@ if(isset($_POST['modify_go'])){
    $link= $filtered['link'] ;
    $explan= $filtered['description'] ;    
    
-   $sql_modify = "UPDATE counter_table SET link='$link', explan = '$explan' WHERE id = '$id'";
-   $result_modify = mysqli_query($conn, $sql_modify);
-   
+
 
 }
 
-
-
-
-
-
-             ?>
+            ?>
 -->  
 </table>
 

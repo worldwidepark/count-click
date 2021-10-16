@@ -1,4 +1,4 @@
 <?php
-$password = "12345";
+$password = ;
 
 ?>
