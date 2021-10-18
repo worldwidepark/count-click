@@ -17,17 +17,23 @@ include('password.php');
 <h1>LINKとLINKの説明を入力してください。</h1>    
 
 <form action="process_create.php" method="POST">
-<p><input type = 'text' name='link' placeholder='linkを入力'></p>
-<p><textarea name='description' placeholder ='説明'></textarea></p>
+<p><input type = 'text' name='link' placeholder='linkを入力' required></p>
+<p><textarea name='description' placeholder ='説明' required></textarea></p>
 <p><input type ='submit' value = "入力"></p>
 </form>
 
-<p>
+
+</br>
 <form action=# method="GET">
-    <input type = 'text' name="search" placeholder='description欄から検索'>
+    <select name="search_category">
+    <option value="link">LINKから</option>
+    <option value="explan">説明から</option>
+</select>
+<input type = 'text' name="search" placeholder='「説明」欄から検索'>
     <input type ='submit' value = '検索'>
+
 </form>
-    
+ 
 
 <?php
 
@@ -38,10 +44,12 @@ else{
 
 $conn = mysqli_connect('localhost','root',$password,'test');
 
-$sql = 'SELECT * FROM counter_table';
+$sql = 'SELECT * FROM counter_table order by id desc ' ;
 $result = mysqli_query($conn, $sql);
 }
-
+if(isset($_POST['search_exit'])){
+    header('location: index.php');
+}
 if(isset($_POST['modify_go_link'])){
     
     $link=$_POST['modify_go_link'];
@@ -55,7 +63,7 @@ if(isset($_POST['modify_go_description'])){
     
     $explan=$_POST['modify_go_description'];
     $id=$_POST['modify_description_id'];
-    $sql_modify_go_description = "UPDATE counter_table SET explan = '$explan' WHERE id = '$id'";
+    $sql_modify_go_description = "UPDATE counter_table SET explan = '$explan' WHERE id = '$id' ";
     $result_modify = mysqli_query($conn, $sql_modify_go_description);
     header('location: index.php?search='.$_GET['search']);
 }
@@ -65,19 +73,29 @@ if(isset($_GET['search'])){
         echo"<h3>検索ワードを入力してください。</h3>";
     }
     else{
-
+    $search_category = $_GET['search_category'];
     $search = $_GET['search'];
-    $sql_search= "SELECT * FROM counter_table WHERE explan LIKE '%$search%'";
+    $sql_search= "SELECT * FROM counter_table WHERE $search_category LIKE '%$search%'  order by id desc";
   $search_result = mysqli_query($conn, $sql_search);
+  $check = mysqli_fetch_array($search_result);
 
+  if($check==null){
+
+    echo"<h3>検索結果がありません。検索ワードを確認してください。</h3>";
+    
+}
+else{
   ?>
-
+  <form action="#" method="POST">
+        <input type="hidden" name="search_exit">
+        <button type="submit">検索終了</button>
+    </form> 
 
      <h3>検索結果は以下になります。</h3>
 <table border="1">
 
 <tr>
-     <td>移動先link</td><td>SLACK入力LINK</td><td>description</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
+     <td>移動先link</td><td>SLACK入力LINK</td><td>説明</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 
 <?php
 $num = 0;
@@ -133,19 +151,19 @@ while($row = mysqli_fetch_array($search_result)){
                     echo $filtered['description'];?>
                     <form action="#" method="post" >
                     <input type = "hidden" name="modify_description" value="<?=$num?>">
-                    <button type="submit" >修正</button>    
+                    <button type="submit" >修正</button>    </form>  
                     <?php } 
                 }
                  else{
                    echo $filtered['description'];?>
                    <form action="#" method="post" >
                    <input type = "hidden" name="modify_description" value="<?=$num?>">
-                   <button type="submit" >修正</button>    
+                   <button type="submit" >修正</button>      </form>
                    <?php } ?>
                      
                            
-                </form>  
-              </form>
+                
+            
                     </td>
              <td><?=$filtered['count']?></td>　
              <td>
@@ -179,7 +197,7 @@ while($row = mysqli_fetch_array($search_result)){
              </tr>
            
  <?php  
-}}}
+}}}}
 
 ?>
 <!--
@@ -198,9 +216,12 @@ if(isset($_POST['modify_go'])){
 -->  
 </table>
 
+<h3>目録</h3>
+
 <table border="1">
+
 <tr>
-     <td>移動先link</td><td>SLACK入力LINK</td><td>description</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
+     <td>移動先link</td><td>SLACK入力LINK</td><td>説明</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 
 <?php
 while($row = mysqli_fetch_array($result)){
