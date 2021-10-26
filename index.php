@@ -18,7 +18,7 @@ include('password.php');
 
 <form action="process_create.php" method="POST">
 <p><input type = 'text' name='link' placeholder='linkを入力' required></p>
-<p><textarea name='description' placeholder ='説明' required></textarea></p>
+<p><textarea name='explain_link' placeholder ='説明' required></textarea></p>
 <p><input type ='submit' value = "入力"></p>
 </form>
 
@@ -27,9 +27,9 @@ include('password.php');
 <form action=# method="GET">
     <select name="search_category">
     <option value="link">LINKから</option>
-    <option value="explan">説明から</option>
+    <option value="explain_link">説明から</option>
 </select>
-<input type = 'text' name="search" placeholder='「説明」欄から検索'>
+<input type = 'text' name="search" placeholder='検索キーワードをいれてください。'>
     <input type ='submit' value = '検索'>
 
 </form>
@@ -56,41 +56,42 @@ if(isset($_POST['modify_go_link'])){
     $id=$_POST['modify_link_id'];
     $sql_modify_go_link = "UPDATE counter_table SET link='$link' WHERE id = '$id'";
     $result_modify = mysqli_query($conn, $sql_modify_go_link);
-    header('location: index.php?search='.$_GET['search']);
+    header('location: index.php?search_category='.$_GET['search_category'].'&search='.$_GET['search']);
 }
 
 if(isset($_POST['modify_go_description'])){
     
-    $explan=$_POST['modify_go_description'];
+    $explain_link=$_POST['modify_go_description'];
     $id=$_POST['modify_description_id'];
-    $sql_modify_go_description = "UPDATE counter_table SET explan = '$explan' WHERE id = '$id' ";
+    $sql_modify_go_description = "UPDATE counter_table SET explain_link = '$explain_link' WHERE id = '$id' ";
     $result_modify = mysqli_query($conn, $sql_modify_go_description);
-    header('location: index.php?search='.$_GET['search']);
+    header('location: index.php?search_category='.$_GET['search_category'].'&search='.$_GET['search']);
 }
 
 if(isset($_GET['search'])){
     if($_GET['search']==""){
-        echo"<h3>検索ワードを入力してください。</h3>";
+        echo"<h3>検索キーワードを入力してください。</h3>";
     }
     else{
     $search_category = $_GET['search_category'];
     $search = $_GET['search'];
     $sql_search= "SELECT * FROM counter_table WHERE $search_category LIKE '%$search%'  order by id desc";
   $search_result = mysqli_query($conn, $sql_search);
-  $check = mysqli_fetch_array($search_result);
+  $search_result_check = mysqli_fetch_array($search_result);
 
-  if($check==null){
-
-    echo"<h3>検索結果がありません。検索ワードを確認してください。</h3>";
-    
-}
-else{
   ?>
   <form action="#" method="POST">
         <input type="hidden" name="search_exit">
         <button type="submit">検索終了</button>
     </form> 
-
+    <?php
+if(!isset($search_result_check['id'])){
+    echo "</br><h2>検索結果がありません。<h2>";
+  
+}
+else{ 
+    mysqli_data_seek($search_result,0);
+    ?>
      <h3>検索結果は以下になります。</h3>
 <table border="1">
 
@@ -98,13 +99,14 @@ else{
      <td>移動先link</td><td>SLACK入力LINK</td><td>説明</td><td>click回数</td><td>削除</td><td>（+）クリック数</td><td>（-）クリック数</td>
 
 <?php
+
 $num = 0;
 while($row = mysqli_fetch_array($search_result)){
     $filtered = array(
-        'id'=>htmlspecialchars($row['ID']),
+        'id'=>htmlspecialchars($row['id']),
         'link'=>htmlspecialchars($row['link']),
         'link_to_go'=>htmlspecialchars($row['link_to_go']),
-        'description'=>htmlspecialchars($row['explan']),
+        'explain_link'=>htmlspecialchars($row['explain_link']),
         'count'=>htmlspecialchars($row['count'])
     );
     $num=$num+1;
@@ -117,6 +119,7 @@ while($row = mysqli_fetch_array($search_result)){
                   <form action="#" method="POST">
                       <input type ="text" name="modify_go_link" value="<?=$filtered['link']?>">
                       <input type = "hidden" name="modify_link_id" value="<?=$filtered['id']?>">
+                      
                       <button type="submit">修正開始</button>
                     </form> 
                  <?php }
@@ -142,20 +145,20 @@ while($row = mysqli_fetch_array($search_result)){
              if(isset($_POST['modify_description'])){
                  if($_POST['modify_description']==$num){ ?>
                   <form action="#" method="POST">
-                      <input type ="text" name="modify_go_description" value="<?=$filtered['description']?>">
+                      <input type ="text" name="modify_go_description" value="<?=$filtered['explain_link']?>">
                       <input type = "hidden" name="modify_description_id" value="<?=$filtered['id']?>">
                   <button type="submit">修正開始</button> 
                 </form> 
                  <?php }
                  else{
-                    echo $filtered['description'];?>
+                    echo $filtered['explain_link'];?>
                     <form action="#" method="post" >
                     <input type = "hidden" name="modify_description" value="<?=$num?>">
                     <button type="submit" >修正</button>    </form>  
                     <?php } 
                 }
                  else{
-                   echo $filtered['description'];?>
+                   echo $filtered['explain_link'];?>
                    <form action="#" method="post" >
                    <input type = "hidden" name="modify_description" value="<?=$num?>">
                    <button type="submit" >修正</button>      </form>
@@ -173,6 +176,7 @@ while($row = mysqli_fetch_array($search_result)){
                    <?php if(isset($_GET['search'])){ 
                      ?>  
                     <input type = "hidden" name="search" value="<?=$search?>">
+                    <input type = "hidden" name="search_category" value="<?=$search_category?>">
                     <?php }?>
                     <input type="submit" value ="delete">
        　　　　 </form>
@@ -181,6 +185,7 @@ while($row = mysqli_fetch_array($search_result)){
                 <form action="process_click.php" method="post" >
                     <input type = "hidden" name="plus" value="<?=$filtered['id']?>">               
                         <input type = "hidden" name="search" value="<?=$search?>"> 
+                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
                     <input type="submit" value ="+">
        　　　　 </form>
               </td>
@@ -188,6 +193,7 @@ while($row = mysqli_fetch_array($search_result)){
                 <form action="process_click.php" method="post" >
                     <input type = "hidden" name="minus" value="<?=$filtered['id']?>">            
                         <input type = "hidden" name="search" value="<?=$search?>"> 
+                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
                     <input type="submit" value ="-">
        　　　　 </form>
               </td>         
@@ -206,7 +212,7 @@ $id = $filtered['id']  ;
 if(isset($_POST['modify_go'])){
 
    $link= $filtered['link'] ;
-   $explan= $filtered['description'] ;    
+   $explain_link= $filtered['explain_link'] ;    
    
 
 
@@ -226,10 +232,10 @@ if(isset($_POST['modify_go'])){
 <?php
 while($row = mysqli_fetch_array($result)){
     $filtered = array(
-        'id'=>htmlspecialchars($row['ID']),
+        'id'=>htmlspecialchars($row['id']),
         'link'=>htmlspecialchars($row['link']),
         'link_to_go'=>htmlspecialchars($row['link_to_go']),
-        'description'=>htmlspecialchars($row['explan']),
+        'explain_link'=>htmlspecialchars($row['explain_link']),
         'count'=>htmlspecialchars($row['count'])
     );
 
@@ -237,7 +243,7 @@ while($row = mysqli_fetch_array($result)){
 　　　　　　<tr>
              <td><?=$filtered['link']?></td>
              <td><?=$filtered['link_to_go']?></td>
-             <td><?=$filtered['description']?></td>
+             <td><?=$filtered['explain_link']?></td>
              <td><?=$filtered['count']?></td>　
              <td>
                 <form action="process_delete.php" method="post" 
@@ -246,6 +252,7 @@ while($row = mysqli_fetch_array($result)){
                     <?php if(isset($_GET['search'])){ 
                         ?>                
                         <input type = "hidden" name="search" value="<?=$search?>"> 
+                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
                         <?php 
                         }?>
                     <input type="submit" value ="delete">
@@ -256,6 +263,7 @@ while($row = mysqli_fetch_array($result)){
                     <input type = "hidden" name="plus" value="<?=$filtered['id']?>">
                     <?php if(isset($_GET['search'])){ ?>                
                         <input type = "hidden" name="search" value="<?=$search?>"> 
+                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
                         <?php 
                     }?>
                     <input type="submit" value ="+">
@@ -266,6 +274,7 @@ while($row = mysqli_fetch_array($result)){
                     <input type = "hidden" name="minus" value="<?=$filtered['id']?>">
                    <?php if(isset($_GET['search'])){ ?>                
                         <input type = "hidden" name="search" value="<?=$search?>"> 
+                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
                         <?php 
                     }?>
                     <input type="submit" value ="-">
