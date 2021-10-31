@@ -2,6 +2,7 @@
 #ob_start();
 session_start();
 include('password.php');
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -50,21 +51,20 @@ $result = mysqli_query($conn, $sql);
 if(isset($_POST['search_exit'])){
     header('location: index.php');
 }
-if(isset($_POST['modify_go_link'])){
+if(isset($_POST['modify_link_go'])){
     
-    $link=$_POST['modify_go_link'];
+    $link=$_POST['modify_link_go'];
     $id=$_POST['modify_link_id'];
-    $sql_modify_go_link = "UPDATE counter_table SET link='$link' WHERE id = '$id'";
-    $result_modify = mysqli_query($conn, $sql_modify_go_link);
+    $sql_modify_link_go = "UPDATE counter_table SET link='$link' WHERE id = '$id'";
+    $result_modify = mysqli_query($conn, $sql_modify_link_go);
     header('location: index.php?search_category='.$_GET['search_category'].'&search='.$_GET['search']);
 }
 
-if(isset($_POST['modify_go_description'])){
-    
-    $explain_link=$_POST['modify_go_description'];
-    $id=$_POST['modify_description_id'];
-    $sql_modify_go_description = "UPDATE counter_table SET explain_link = '$explain_link' WHERE id = '$id' ";
-    $result_modify = mysqli_query($conn, $sql_modify_go_description);
+if(isset($_POST['modify_explain_go'])){
+    $explain_link=$_POST['modify_explain_go'];
+    $id=$_POST['modify_explain_id'];
+    $sql_modify_explain_go = "UPDATE counter_table SET explain_link = '$explain_link' WHERE id = '$id' ";
+    $result_modify = mysqli_query($conn, $sql_modify_explain_go);
     header('location: index.php?search_category='.$_GET['search_category'].'&search='.$_GET['search']);
 }
 
@@ -110,64 +110,26 @@ while($row = mysqli_fetch_array($search_result)){
         'count'=>htmlspecialchars($row['count'])
     );
     $num=$num+1;
+    include_once('button.php');
+   
 ?>
 
 　　　　　　<tr>
-             <td><?php
-                if(isset($_POST['modify_link'])){
-                if($_POST['modify_link']==$num){ ?>
-                  <form action="#" method="POST">
-                      <input type ="text" name="modify_go_link" value="<?=$filtered['link']?>">
-                      <input type = "hidden" name="modify_link_id" value="<?=$filtered['id']?>">
-                      
-                      <button type="submit">修正開始</button>
-                    </form> 
-                 <?php }
-                    else{
-                        echo $filtered['link']; 
-                        ?>
-                       <form action="#" method="post" >
-                           <input type = "hidden" name="modify_link" value="<?=$num?>">
-                           <button type="submit" >修正</button>                
-                    </form>           
-                    <?php } }
-                 else{
-                    echo $filtered['link']; 
-                    ?>
-                   <form action="#" method="post" >
-                       <input type = "hidden" name="modify_link" value="<?=$num?>">
-                       <button type="submit" >修正</button>                
-                </form>           
-                <?php } ?>
-            </td>
-             <td><?=$filtered['link_to_go']?></td>
-             <td><?php
-             if(isset($_POST['modify_description'])){
-                 if($_POST['modify_description']==$num){ ?>
-                  <form action="#" method="POST">
-                      <input type ="text" name="modify_go_description" value="<?=$filtered['explain_link']?>">
-                      <input type = "hidden" name="modify_description_id" value="<?=$filtered['id']?>">
-                  <button type="submit">修正開始</button> 
-                </form> 
-                 <?php }
-                 else{
-                    echo $filtered['explain_link'];?>
-                    <form action="#" method="post" >
-                    <input type = "hidden" name="modify_description" value="<?=$num?>">
-                    <button type="submit" >修正</button>    </form>  
-                    <?php } 
-                }
-                 else{
-                   echo $filtered['explain_link'];?>
-                   <form action="#" method="post" >
-                   <input type = "hidden" name="modify_description" value="<?=$num?>">
-                   <button type="submit" >修正</button>      </form>
-                   <?php } ?>
-                     
-                           
-                
-            
-                    </td>
+             <td>
+                 <?php
+                 $modify_link = new Button_modify('modify_link','link');
+                 $modify_link-> modify_button();
+                 ?>
+             </td>
+             <td>
+                 <?=$filtered['link_to_go']?>
+             </td>
+             <td>
+                 <?php
+                 $modify_explain = new Button_modify('modify_explain','explain_link');
+                 $modify_explain-> modify_button();
+               ?>
+             </td>
              <td><?=$filtered['count']?></td>　
              <td>
                 <form action="process_delete.php" method="post" 
@@ -182,20 +144,16 @@ while($row = mysqli_fetch_array($search_result)){
        　　　　 </form>
         　　　</td>
     　　　    <td>
-                <form action="process_click.php" method="post" >
-                    <input type = "hidden" name="plus" value="<?=$filtered['id']?>">               
-                        <input type = "hidden" name="search" value="<?=$search?>"> 
-                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
-                    <input type="submit" value ="+">
-       　　　　 </form>
+               <?php
+                 $modify_minus = new Button_modify('+','    ');
+                 $modify_minus-> count_modify_button();
+               ?>
               </td>
               <td>
-                <form action="process_click.php" method="post" >
-                    <input type = "hidden" name="minus" value="<?=$filtered['id']?>">            
-                        <input type = "hidden" name="search" value="<?=$search?>"> 
-                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
-                    <input type="submit" value ="-">
-       　　　　 </form>
+              <?php
+                 $modify_minus = new Button_modify('-','    ');
+                 $modify_minus-> count_modify_button();
+               ?>
               </td>         
             
 
@@ -258,28 +216,18 @@ while($row = mysqli_fetch_array($result)){
                     <input type="submit" value ="delete">
        　　　　 </form>
         　　　</td>
-    　　　    <td>
-                <form action="process_click.php" method="post" >
-                    <input type = "hidden" name="plus" value="<?=$filtered['id']?>">
-                    <?php if(isset($_GET['search'])){ ?>                
-                        <input type = "hidden" name="search" value="<?=$search?>"> 
-                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
-                        <?php 
-                    }?>
-                    <input type="submit" value ="+">
-       　　　　 </form>
+        　　　  　    <td>
+               <?php
+                 $modify_minus = new Button_modify('+','');
+                 $modify_minus-> count_modify_button();
+               ?>
               </td>
               <td>
-                <form action="process_click.php" method="post" >
-                    <input type = "hidden" name="minus" value="<?=$filtered['id']?>">
-                   <?php if(isset($_GET['search'])){ ?>                
-                        <input type = "hidden" name="search" value="<?=$search?>"> 
-                        <input type = "hidden" name="search_category" value="<?=$search_category?>">
-                        <?php 
-                    }?>
-                    <input type="submit" value ="-">
-       　　　　 </form>
-              </td>
+              <?php
+                 $modify_minus = new Button_modify('-','');
+                 $modify_minus-> count_modify_button();
+               ?>
+              </td>         
 
             
 
