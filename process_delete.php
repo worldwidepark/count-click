@@ -19,15 +19,15 @@ $result = mysqli_query($conn,$sql);
 
 
 
-if(isset($_POST['search'])){
-  $search = $_POST['search'];
-  $search_category = $_POST['search_category'];
-            header('location: index.php?search_category='.$search_category.'&search='.$search);
-            
-}
-else{
-  header('location: index.php');
-}
+  if(isset($_POST['search'])){
+    $search = $_POST['search'];
+    $search_category = $_POST['search_category'];
+              header('location: index.php?search_category='.$search_category.'&search='.$search);
+                
+  }
+  else{
+    header('location: index.php');
+  }
 
 
-?>
+  ?>

@@ -222,5 +222,10 @@ database index名変更→AWSに適応するとき、index名違いで修正に�
 21/10/27　朴（亨）
 
 modify関数を作って、修正ボタンとCOUNTの+、-ボタンを関数化した。
-while文の中にはいるので、includeするため、include_onceを利用。
+<!-- while文の中にはいるので、includeするため、include_onceを利用。 -->
 21/11/1　朴（亨）
+
+
+削除ボタン、修正handler関数化実施。
+
+21/11/2　朴（亨）
